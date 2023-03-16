@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  bank_simulator:
+    container_name: bank_simulator
+    image: bbyars/mountebank:2.8.1
+    ports:
+      - "2525:2525"
+      - "8080:8080"
+    command: --configfile /imposters/bank_simulator.ejs
+    volumes:
+      - type: bind
+        source: ./imposters
+        target: /imposters
+      
