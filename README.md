@@ -1,3 +1,14 @@
+# Instructions for candidates
+This is an outline of the challenge that we will be completing in your coding interview. During this session, we will work on this brief with you in a pairing style, with you driving the paring. The expectation is not to finish the task, but use the time to work through solving the problem. There is also time dedicated during the interview to be asked questions around approach.
+
+Ahead of the session, please **do take a look at the details of this project** and familiarize yourself with the requirements and the documentation.
+
+Please ensure to fully prepare your development environment for the session. Setup any IDEs and ensure that you have an libraries or dependencies and installed and loaded ahead of your session. We want to avoid spending time in the interviews on setup.
+
+Once your environment is setup, you can begin working on the challenge, to get any initial components built/started. However please do not spend longer than 60 minutes working on this. We want to spend time working with in the session, rather than reviewing what you have already done.
+
+We look forward to working through this challenge together. 
+
 # Building a payment gateway
 E-Commerce is experiencing exponential growth and merchants who sell their goods or services online need a way to easily collect money from their customers.
 
