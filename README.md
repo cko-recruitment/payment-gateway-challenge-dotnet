@@ -1,3 +1,14 @@
+# Instructions for candidates
+During this session we'll work using the pair programming technique with you as the driver and we will be the observer or navigator. The expectation is not to finish the task, but use the time to work through solving the problem.
+
+Ahead of the session, please **do take a look at the details of this project** and familiarize yourself with the requirements and the documentation.
+
+Please ensure to fully prepare your development environment for the session. Setup any IDEs and ensure that you have all libraries and dependencies installed and ready ahead of your session to avoid losing time on this during the session.
+
+Once your environment is set up you can begin working on the challenge before the session. Please do not spend longer than 60 minutes working on this as we want to spend time working with in the session rather than reviewing what you have already done.
+
+We look forward to working through this challenge together. 
+
 # Building a payment gateway
 E-Commerce is experiencing exponential growth and merchants who sell their goods or services online need a way to easily collect money from their customers.
 
