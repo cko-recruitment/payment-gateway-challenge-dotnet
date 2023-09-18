@@ -5,7 +5,7 @@ Ahead of the session, please **do take a look at the details of this project** a
 
 Please ensure to fully prepare your development environment for the session. Setup any IDEs and ensure that you have all libraries and dependencies installed and ready ahead of your session to avoid losing time on this during the session.
 
-Once your environment is setup, you can begin working on the challenge, to get any initial components built/started. However please do not spend longer than 60 minutes working on this. We want to spend time working with in the session, rather than reviewing what you have already done.
+Once your environment is set up you can begin working on the challenge before the session. Please do not spend longer than 60 minutes working on this as we want to spend time working with in the session rather than reviewing what you have already done.
 
 We look forward to working through this challenge together. 
 
