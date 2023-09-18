@@ -3,7 +3,7 @@ During this session we'll work using the pair programming technique with you as 
 
 Ahead of the session, please **do take a look at the details of this project** and familiarize yourself with the requirements and the documentation.
 
-Please ensure to fully prepare your development environment for the session. Setup any IDEs and ensure that you have an libraries or dependencies and installed and loaded ahead of your session. We want to avoid spending time in the interviews on setup.
+Please ensure to fully prepare your development environment for the session. Setup any IDEs and ensure that you have all libraries and dependencies installed and ready ahead of your session to avoid losing time on this during the session.
 
 Once your environment is setup, you can begin working on the challenge, to get any initial components built/started. However please do not spend longer than 60 minutes working on this. We want to spend time working with in the session, rather than reviewing what you have already done.
 
