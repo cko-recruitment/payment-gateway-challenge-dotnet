@@ -1,5 +1,5 @@
 # Instructions for candidates
-This is an outline of the challenge that we will be completing in your coding interview. During this session, we will work on this brief with you in a pairing style, with you driving the paring. The expectation is not to finish the task, but use the time to work through solving the problem. There is also time dedicated during the interview to be asked questions around approach.
+During this session we'll work using the pair programming technique with you as the driver and we will be the observer or navigator. The expectation is not to finish the task, but use the time to work through solving the problem.
 
 Ahead of the session, please **do take a look at the details of this project** and familiarize yourself with the requirements and the documentation.
 
