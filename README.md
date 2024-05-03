@@ -1,6 +1,6 @@
 # Instructions for candidates
 
-This is the .NET version of the Payment Gateway challenge. If you haven't already read the [README.md](https://github.com/cko-recruitment) in the root of this organisation, please do so now. 
+This is the .NET version of the Payment Gateway challenge. If you haven't already read this [README.md](https://github.com/cko-recruitment/.github/tree/beta) on the details of this exercise, please do so now. 
 
 ## Template structure
 ```
