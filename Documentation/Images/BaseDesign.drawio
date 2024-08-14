@@ -1,0 +1,89 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.5 Chrome/126.0.6478.183 Electron/31.3.0 Safari/537.36" version="24.7.5">
+  <diagram name="Page-1" id="6_pKinH9KJxc2C_COTnn">
+    <mxGraphModel dx="850" dy="819" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2XguI70CrozmOT7nTDVP-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="2XguI70CrozmOT7nTDVP-1" target="2XguI70CrozmOT7nTDVP-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-1" value="Client&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="330" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="2XguI70CrozmOT7nTDVP-2" target="2XguI70CrozmOT7nTDVP-10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="411.25" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-2" value="Merchant API&lt;div&gt;Gateway&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="330" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-4" value="" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.service_bus_queues;pointerEvents=1;" vertex="1" parent="1">
+          <mxGeometry x="453.75" y="274.75" width="42.5" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.042;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="2XguI70CrozmOT7nTDVP-10" target="2XguI70CrozmOT7nTDVP-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="531.25" y="360" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-7" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.bank;fillColor=#5294CF;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="670" y="274.75" width="40.5" height="40.5" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-8" value="Acquirer API" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="630.25" y="330" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-10" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;rotation=90;" vertex="1" parent="1">
+          <mxGeometry x="465" y="300" width="47.5" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-11" value="&lt;span style=&quot;color: rgb(240, 240, 240); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(27, 29, 30); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;Payment Processor Handler&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="437.5" y="330" width="75" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-12" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Azure_Cosmos_DB.svg;" vertex="1" parent="1">
+          <mxGeometry x="662.25" y="461" width="56" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-13" value="Event Store" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="660.25" y="517" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="2XguI70CrozmOT7nTDVP-17" target="2XguI70CrozmOT7nTDVP-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-17" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;rotation=90;" vertex="1" parent="1">
+          <mxGeometry x="456.25" y="497.25" width="47.5" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-18" value="" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.service_bus_queues;pointerEvents=1;" vertex="1" parent="1">
+          <mxGeometry x="453.75" y="485" width="42.5" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-19" value="&lt;span style=&quot;color: rgb(240, 240, 240); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(27, 29, 30); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;Event Processor&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="535" width="75" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="2XguI70CrozmOT7nTDVP-2" target="2XguI70CrozmOT7nTDVP-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="2XguI70CrozmOT7nTDVP-22" target="2XguI70CrozmOT7nTDVP-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-22" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;rotation=90;" vertex="1" parent="1">
+          <mxGeometry x="673.25" y="660" width="47.5" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="2XguI70CrozmOT7nTDVP-17" target="2XguI70CrozmOT7nTDVP-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-24" value="" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/mscae/Event_Hubs.svg;" vertex="1" parent="1">
+          <mxGeometry x="670" y="640" width="48" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-25" value="&lt;span style=&quot;color: rgb(240, 240, 240); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(27, 29, 30); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;Event Hub&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(240, 240, 240); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(27, 29, 30); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;Webhooks&lt;/span&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="650" y="740" width="106.75" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-26" value="Webhook Service&lt;div&gt;Consumer&lt;/div&gt;" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="860" y="685" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-28" value="Events&lt;div&gt;Create,&lt;/div&gt;&lt;div&gt;Success&lt;/div&gt;&lt;div&gt;Failed&lt;/div&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="503.75" y="480" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="2XguI70CrozmOT7nTDVP-29" value="Events&lt;div&gt;Create,&lt;/div&gt;&lt;div&gt;Success&lt;/div&gt;&lt;div&gt;Failed&lt;/div&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="718" y="630" width="120" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

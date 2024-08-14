@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <Folder Include="Controllers" />
+    <Folder Include="Controllers\" />
+    <Folder Include="MiddleWare\" />
   </ItemGroup>
 
 </Project>
