@@ -54,6 +54,11 @@ namespace PaymentGateway.Api.Services
             return true;
         }
 
+        /// <summary>
+        /// Card number must be greater than 14 and less than 19
+        /// </summary>
+        /// <param name="cardNumber">the card number</param>
+        /// <returns><see cref="bool"/></returns>
         private static bool CorrectCardLength(long cardNumber)
         {
             var ccLength = (int)Math.Floor(Math.Log10(cardNumber) + 1);

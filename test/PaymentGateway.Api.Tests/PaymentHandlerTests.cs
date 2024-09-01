@@ -33,6 +33,7 @@ namespace PaymentGateway.Api.Tests
             var result = await sut.HandlePostPaymentAsync(postPaymentRequest);
 
             // Act 
+            Assert.NotNull(result);
             Assert.True(result.Status == PaymentStatus.Rejected);
         }
 

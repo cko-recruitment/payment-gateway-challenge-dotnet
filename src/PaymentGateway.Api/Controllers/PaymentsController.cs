@@ -11,7 +11,7 @@ namespace PaymentGateway.Api.Controllers;
 [ApiController]
 public class PaymentsController(IPaymentsHandler paymentsHandler) : Controller
 {
-    private readonly IPaymentsHandler _paymentsHandler = paymentsHandler;
+    private readonly IPaymentsHandler paymentsHandler = paymentsHandler;
 
     /// <summary>
     /// Controller method for getting a payment
@@ -21,7 +21,7 @@ public class PaymentsController(IPaymentsHandler paymentsHandler) : Controller
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<PostPaymentResponse?>> GetPaymentAsync(Guid id)
     {
-        var payment = await _paymentsHandler.HandleGetPaymentAsync(id);
+        var payment = await paymentsHandler.HandleGetPaymentAsync(id);
 
         return payment is null ? new NotFoundResult() : new OkObjectResult(payment);
     }
@@ -34,7 +34,7 @@ public class PaymentsController(IPaymentsHandler paymentsHandler) : Controller
     [HttpPost]
     public async Task<ActionResult<PostPaymentResponse>> PostPaymentAsync([FromBody] PostPaymentRequest paymentRequest)
     {
-        var paymentResponse = await _paymentsHandler.HandlePostPaymentAsync(paymentRequest);
+        var paymentResponse = await paymentsHandler.HandlePostPaymentAsync(paymentRequest);
 
         if (paymentResponse.Status == PaymentStatus.Rejected)
         {

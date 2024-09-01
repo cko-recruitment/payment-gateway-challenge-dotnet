@@ -54,10 +54,10 @@ namespace PaymentGateway.Api.Services
 
             if (!response.IsSuccessStatusCode || !bankResponse.Authorized)
             {
-                return CreateDeclinedResponse(paymentRequest);
+                return CreateDeclinedResponse(validatedRequest);
             }
 
-            return CreateAuthorizedResponse(paymentRequest);
+            return CreateAuthorizedResponse(validatedRequest);
         }
 
         private string GetBankRequestFormattedDate(int month, int year)
@@ -79,7 +79,7 @@ namespace PaymentGateway.Api.Services
             paymentsRepository.Add(response);
             return response;
         }
-        private PostPaymentResponse CreateAuthorizedResponse(PostPaymentRequest paymentRequest)
+        private PostPaymentResponse CreateAuthorizedResponse(ValidatedPostPaymentRequest paymentRequest)
         {
             var response = new PostPaymentResponseBuilder()
                 .WithId(Guid.NewGuid())
@@ -95,7 +95,7 @@ namespace PaymentGateway.Api.Services
             paymentsRepository.Add(response);
             return response;
         }
-        private PostPaymentResponse CreateDeclinedResponse(PostPaymentRequest paymentRequest)
+        private PostPaymentResponse CreateDeclinedResponse(ValidatedPostPaymentRequest paymentRequest)
         {
             var response = new PostPaymentResponseBuilder()
                 .WithId(Guid.NewGuid())

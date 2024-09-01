@@ -1,8 +1,13 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
+
+using Moq;
 
 using PaymentGateway.Api.Controllers;
 using PaymentGateway.Api.Interfaces;
@@ -15,6 +20,13 @@ namespace PaymentGateway.Api.Tests;
 public class PaymentsControllerTests
 {
     private readonly Random _random = new();
+    private readonly Mock<IPaymentsHandler> paymentHandlerMock = new();
+    private readonly PaymentsController sut;
+
+    public PaymentsControllerTests()
+    {
+        sut = new PaymentsController(paymentHandlerMock.Object);
+    }
     
     [Fact]
     public async Task RetrievesAPaymentSuccessfully()
