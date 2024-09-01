@@ -43,7 +43,6 @@ namespace PaymentGateway.Api.Services
 
             var client = clientFactory.CreateClient();
 
-            string json = JsonSerializer.Serialize(bankRequest);
             var response = await client.PostAsync(
                 Url.BankPayment,
                 new StringContent(JsonSerializer.Serialize(bankRequest))

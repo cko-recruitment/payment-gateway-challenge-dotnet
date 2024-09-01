@@ -1,8 +1,13 @@
-﻿namespace PaymentGateway.Api.Models.Responses;
+﻿using PaymentGateway.Api.Converters;
+using System.Text.Json.Serialization;
+
+namespace PaymentGateway.Api.Models.Responses;
 
 public class PostPaymentResponse
 {
     public Guid Id { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public PaymentStatus Status { get; set; }
     public int? CardNumberLastFour { get; set; }
     public int? ExpiryMonth { get; set; }

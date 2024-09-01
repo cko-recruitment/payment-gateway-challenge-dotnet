@@ -161,7 +161,7 @@ namespace PaymentGateway.Api.Services
 
 
     /// <inheritdoc />
-    public class IsoCodeValidator : IIsoCodeProvider
+    public sealed class IsoCodeValidator : IIsoCodeProvider
 {
         private static readonly FrozenSet<string> _allowedIsoList;
 
