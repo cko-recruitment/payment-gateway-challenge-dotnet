@@ -9,6 +9,6 @@ namespace PaymentGateway.Api.Interfaces
         /// </summary>
         /// <param name="request">The <see cref="PostPaymentRequest"/> to validate</param>
         /// <returns>True if valid, false otherwise</returns>
-        bool Validate(PostPaymentRequest request);
+        bool Validate(PostPaymentRequest request, out ValidatedPostPaymentRequest validatedPostPayment);
     }
 }
