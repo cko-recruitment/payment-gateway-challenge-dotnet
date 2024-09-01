@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using PaymentGateway.Api.Interfaces;
 using PaymentGateway.Api.Models;
@@ -23,7 +21,7 @@ public class PaymentsController(IPaymentsHandler paymentsHandler) : Controller
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<PostPaymentResponse?>> GetPaymentAsync(Guid id)
     {
-        var payment = _paymentsHandler.HandleGetPaymentAsync(id);
+        var payment = await _paymentsHandler.HandleGetPaymentAsync(id);
 
         return payment is null ? new NotFoundResult() : new OkObjectResult(payment);
     }
@@ -36,11 +34,12 @@ public class PaymentsController(IPaymentsHandler paymentsHandler) : Controller
     [HttpPost]
     public async Task<ActionResult<PostPaymentResponse>> PostPaymentAsync([FromBody] PostPaymentRequest paymentRequest)
     {
-
         var paymentResponse = await _paymentsHandler.HandlePostPaymentAsync(paymentRequest);
 
-        return paymentResponse.Status == PaymentStatus.Authorized 
-            ? new OkObjectResult(paymentResponse) 
-            : new BadRequestObjectResult($"Error submitting payment with Id {paymentResponse.Id}");
+        if (paymentResponse.Status == PaymentStatus.Rejected)
+        {
+            return new BadRequestObjectResult(paymentResponse);
+        };
+        return new OkObjectResult(paymentResponse);
     }
 }

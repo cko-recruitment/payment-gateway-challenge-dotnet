@@ -15,10 +15,25 @@ public class PostPaymentResponseBuilder()
 {
     private readonly PostPaymentResponse _paymentResponse = new PostPaymentResponse();
 
-    public PostPaymentResponseBuilder WithNewId()
+    public PostPaymentResponseBuilder WithId(Guid id)
     {
-        _paymentResponse.Id = Guid.NewGuid();
+        _paymentResponse.Id = id;
         return this;
+    }
+
+    public PostPaymentResponseBuilder Authorized()
+    {
+        return WithStatus(PaymentStatus.Authorized);
+    }
+
+    public PostPaymentResponseBuilder Rejected()
+    {
+        return WithStatus(PaymentStatus.Rejected);
+    }
+
+    public PostPaymentResponseBuilder Declined()
+    {
+        return WithStatus(PaymentStatus.Declined);
     }
     public PostPaymentResponseBuilder WithStatus(PaymentStatus status)
     {

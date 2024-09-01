@@ -1,12 +1,14 @@
 ﻿using System.Collections.Frozen;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+
 using PaymentGateway.Api.Interfaces;
 using PaymentGateway.Api.Models.Requests;
 
 namespace PaymentGateway.Api.Services
 {
     /// <inheritdoc />
-    public class PaymentRequestValidator(IIsoCodeValidator isoCodeValidator) : IPaymentRequestValidator
+    public class PaymentRequestValidator(IIsoCodeProvider isoCodeProvider) : IPaymentRequestValidator
     {
         /// <inheritdoc />
         public bool Validate(PostPaymentRequest request, out ValidatedPostPaymentRequest validatedPostPayment)
@@ -17,7 +19,7 @@ namespace PaymentGateway.Api.Services
                 return false;
             }
                      
-            if (!isoCodeValidator.IsValidIsoCode(request.Currency))
+            if (!isoCodeProvider.IsAcceptedIsoCode(request.Currency))
             {
                 return false;
             }
@@ -29,18 +31,23 @@ namespace PaymentGateway.Api.Services
             }
             validatedPostPayment.CardNumber = (long)request.CardNumber;
 
-            if (!ValidExpiryDate((int)request.ExpiryMonth, (int)request.ExpiryYear))
+            if (!ValidExpiryDate((int)request.ExpiryMonth, (int)request.ExpiryYear, out int fourDigitYear))
             {
                 return false;
             }
             validatedPostPayment.ExpiryMonth = (int)request.ExpiryMonth;
-            validatedPostPayment.ExpiryYear = (int)request.ExpiryYear;
+            validatedPostPayment.ExpiryYear = fourDigitYear;
 
             if (!ValidCvv((int)request.Cvv))
             {
                 return false;
             }
             validatedPostPayment.Cvv = (int)request.Cvv;
+
+            if (!ValidAmount((int)request.Amount))
+            {
+                return false;
+            }
 
             validatedPostPayment.Amount = (int)request.Amount;
 
@@ -57,6 +64,21 @@ namespace PaymentGateway.Api.Services
             return true;
         }
 
+        /// <summary>
+        /// Amount must be greater than zero
+        /// </summary>
+        /// <param name="amount">the request amount</param>
+        /// <returns><see cref="bool"/></returns>
+        private static bool ValidAmount(int amount)
+        {
+            return amount > 0;
+        }
+
+        /// <summary>
+        /// Check request has all required values
+        /// </summary>
+        /// <param name="request">the <see cref="PostPaymentRequest"/></param>
+        /// <returns><see cref="bool"/></returns>
         private static bool HasRequiredValues(PostPaymentRequest request)
         {
             foreach (var property in request.GetType().GetProperties().Where(
@@ -70,14 +92,32 @@ namespace PaymentGateway.Api.Services
             return true;
         }
 
-        private static bool ValidExpiryDate(int month, int year)
+        /// <summary>
+        /// Ensure the expiry date is in the future and year is formatted correctly
+        /// </summary>
+        /// <param name="month"></param>
+        /// <param name="year"></param>
+        /// <param name="fourDigitYear"></param>
+        /// <returns></returns>
+        private static bool ValidExpiryDate(int month, int year, out int fourDigitYear)
         {
+            fourDigitYear = year;
             if (month < 1 || month > 12)
             {
                 return false;
             }
 
-            DateTime expiry = new DateTime(year, month, 1);
+            int yearLength = (int)Math.Floor(Math.Log10(year) + 1);
+            if (yearLength.Equals(2))
+            {
+                fourDigitYear = CultureInfo.CurrentCulture.Calendar.ToFourDigitYear(year);
+            }
+            else if (!yearLength.Equals(4))
+            { 
+                return false;
+            }
+
+            DateTime expiry = new DateTime(fourDigitYear, month, 28);
 
             if (expiry < DateTime.UtcNow)
             {
@@ -87,6 +127,11 @@ namespace PaymentGateway.Api.Services
             return true;
         }
 
+        /// <summary>
+        /// Ensure Cvv is 3 / 4 digits long
+        /// </summary>
+        /// <param name="cvv"></param>
+        /// <returns></returns>
         private static bool ValidCvv(int cvv)
         {
             int cvvLength = (int)Math.Floor(Math.Log10(cvv) + 1);
@@ -96,15 +141,23 @@ namespace PaymentGateway.Api.Services
     }
 }
 
-
-    public interface IIsoCodeValidator
+    /// <summary>
+    /// Provides list of valid Iso codes
+    /// </summary>
+    public interface IIsoCodeProvider
     {
-        public bool IsValidIsoCode(string isoCode);
+        /// <summary>
+        /// Compares given Iso code against list of valid codes
+        /// </summary>
+        /// <param name="isoCode">the code to check</param>
+        /// <returns><see cref="bool"/>true if found, false otherwise</returns>
+        public bool IsAcceptedIsoCode(string isoCode);
     }
 
 
-    public class IsoCodeValidator : IIsoCodeValidator
-    {
+    /// <inheritdoc />
+    public class IsoCodeValidator : IIsoCodeProvider
+{
         private static readonly FrozenSet<string> _allowedIsoList;
 
         static IsoCodeValidator()
@@ -115,12 +168,9 @@ namespace PaymentGateway.Api.Services
                 "eur"}.ToFrozenSet();
         }
 
-        public bool IsValidIsoCode(string isoCode)
+        /// <inheritdoc />
+        public bool IsAcceptedIsoCode(string isoCode)
         {
-            if (isoCode.Length != 3)
-            {
-                return false;
-            }
             return _allowedIsoList.Contains(isoCode, StringComparer.InvariantCultureIgnoreCase);
     }
 }

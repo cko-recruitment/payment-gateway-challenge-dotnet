@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 
 using PaymentGateway.Api.Interfaces;
-using PaymentGateway.Api.Models;
 using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
 
@@ -10,10 +9,9 @@ namespace PaymentGateway.Api.Services
     /// <inheritdoc />
     public class PaymentsHandler(
         IPaymentsRepository paymentsRepository,
-        IPaymentRequestValidator paymentRequestValidator) : IPaymentsHandler
+        IPaymentRequestValidator paymentRequestValidator,
+        IHttpClientFactory clientFactory) : IPaymentsHandler
     {
-        private static readonly HttpClient client = new HttpClient();
-
         internal static class Url
         {
             public static Uri BankPayment = new Uri("http://localhost:8080/payments");
@@ -43,14 +41,16 @@ namespace PaymentGateway.Api.Services
                 Currency = validatedRequest.Currency
             };
 
+            var client = clientFactory.CreateClient();
+
             string json = JsonSerializer.Serialize(bankRequest);
             var response = await client.PostAsync(
                 Url.BankPayment,
                 new StringContent(JsonSerializer.Serialize(bankRequest))
             );
 
-            var cont = await response.Content.ReadAsStringAsync()!;
-            BankResponse? bankResponse = JsonSerializer.Deserialize<BankResponse>(cont);
+            var content = await response.Content.ReadAsStringAsync()!;
+            BankResponse? bankResponse = JsonSerializer.Deserialize<BankResponse>(content);
 
             if (!response.IsSuccessStatusCode || !bankResponse.Authorized)
             {
@@ -64,17 +64,16 @@ namespace PaymentGateway.Api.Services
         {
             return month >= 10 ? $"{month}/{year}" : $"0{month}/{year}";
         }
-
         private PostPaymentResponse CreateRejectedResponse(PostPaymentRequest paymentRequest)
         {
             var response = new PostPaymentResponseBuilder()
-                .WithNewId()
-                .WithStatus(PaymentStatus.Rejected)
+                .WithId(Guid.NewGuid())
                 .WithCurrency(paymentRequest.Currency)
                 .WithCardNumberLastFour(paymentRequest.CardNumber)
                 .WithExpiryMonth(paymentRequest.ExpiryMonth)
                 .WithExpiryYear(paymentRequest.ExpiryYear)
                 .WithCurrency(paymentRequest.Currency)
+                .Rejected()
                 .Build();
 
             paymentsRepository.Add(response);
@@ -83,13 +82,14 @@ namespace PaymentGateway.Api.Services
         private PostPaymentResponse CreateAuthorizedResponse(PostPaymentRequest paymentRequest)
         {
             var response = new PostPaymentResponseBuilder()
-                .WithNewId()
-                .WithStatus(PaymentStatus.Authorized)
+                .WithId(Guid.NewGuid())
                 .WithCurrency(paymentRequest.Currency)
                 .WithCardNumberLastFour(paymentRequest.CardNumber)
                 .WithExpiryMonth(paymentRequest.ExpiryMonth)
                 .WithExpiryYear(paymentRequest.ExpiryYear)
                 .WithCurrency(paymentRequest.Currency)
+                .WithAmount(paymentRequest.Amount)
+                .Authorized()
                 .Build();
 
             paymentsRepository.Add(response);
@@ -98,13 +98,14 @@ namespace PaymentGateway.Api.Services
         private PostPaymentResponse CreateDeclinedResponse(PostPaymentRequest paymentRequest)
         {
             var response = new PostPaymentResponseBuilder()
-                .WithNewId()
-                .WithStatus(PaymentStatus.Declined)
+                .WithId(Guid.NewGuid())
                 .WithCurrency(paymentRequest.Currency)
                 .WithCardNumberLastFour(paymentRequest.CardNumber)
                 .WithExpiryMonth(paymentRequest.ExpiryMonth)
                 .WithExpiryYear(paymentRequest.ExpiryYear)
                 .WithCurrency(paymentRequest.Currency)
+                .WithAmount(paymentRequest.Amount)
+                .Declined()
                 .Build();
 
             paymentsRepository.Add(response);

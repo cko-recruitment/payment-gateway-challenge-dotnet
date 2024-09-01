@@ -7,8 +7,8 @@ namespace PaymentGateway.Api.Extensions
     {
         public static void AddPaymentServices(this IServiceCollection services) 
         {
-            IIsoCodeValidator isoValidator = new IsoCodeValidator();
-            services.AddSingleton(isoValidator);
+            IIsoCodeProvider isoCodeProvider = new IsoCodeValidator();
+            services.AddSingleton(isoCodeProvider);
             services.AddSingleton<IPaymentsHandler, PaymentsHandler>();
             services.AddSingleton<IPaymentsRepository, PaymentsRepository>();
             services.AddSingleton<IPaymentRequestValidator, PaymentRequestValidator>();
