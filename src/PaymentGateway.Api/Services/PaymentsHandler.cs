@@ -59,6 +59,8 @@ namespace PaymentGateway.Api.Services
             return CreateAuthorizedResponse(validatedRequest);
         }
 
+#region private methods
+
         private string GetBankRequestFormattedDate(int month, int year)
         {
             return month >= 10 ? $"{month}/{year}" : $"0{month}/{year}";
@@ -75,9 +77,10 @@ namespace PaymentGateway.Api.Services
                 .Rejected()
                 .Build();
 
-            paymentsRepository.Add(response);
             return response;
         }
+
+        /// Only persist response in Authorized + Declined responses. Assume we only store last 4 digits
         private PostPaymentResponse CreateAuthorizedResponse(ValidatedPostPaymentRequest paymentRequest)
         {
             var response = new PostPaymentResponseBuilder()
@@ -110,6 +113,8 @@ namespace PaymentGateway.Api.Services
             paymentsRepository.Add(response);
             return response;
         }
+
+#endregion private methods
 
     }
 }

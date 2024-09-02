@@ -40,6 +40,8 @@ public class PaymentsController(IPaymentsHandler paymentsHandler) : Controller
         {
             return new BadRequestObjectResult(paymentResponse);
         };
+        
+        // Assume that a declined is an ok response
         return new OkObjectResult(paymentResponse);
     }
 }

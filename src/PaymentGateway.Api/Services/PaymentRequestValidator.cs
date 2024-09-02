@@ -8,12 +8,14 @@ using PaymentGateway.Api.Models.Requests;
 namespace PaymentGateway.Api.Services
 {
     /// <inheritdoc />
-    public class PaymentRequestValidator(IIsoCodeProvider isoCodeProvider) : IPaymentRequestValidator
+    public sealed class PaymentRequestValidator(IIsoCodeProvider isoCodeProvider) : IPaymentRequestValidator
     {
         /// <inheritdoc />
         public bool Validate(PostPaymentRequest request, out ValidatedPostPaymentRequest validatedPostPayment)
         {
             validatedPostPayment = new();
+
+            // realistically a value has to exist due to controller model binding, reverify here
             if (!HasRequiredValues(request)) 
             {
                 return false;
@@ -31,6 +33,7 @@ namespace PaymentGateway.Api.Services
             }
             validatedPostPayment.CardNumber = (long)request.CardNumber;
 
+            // Also convert a two digit year to 4 digit
             if (!ValidExpiryDate((int)request.ExpiryMonth, (int)request.ExpiryYear, out int fourDigitYear))
             {
                 return false;
@@ -115,6 +118,7 @@ namespace PaymentGateway.Api.Services
             int yearLength = (int)Math.Floor(Math.Log10(year) + 1);
             if (yearLength.Equals(2))
             {
+                // year must be in future, safe to convert to 2000s
                 fourDigitYear = CultureInfo.CurrentCulture.Calendar.ToFourDigitYear(year);
             }
             else if (!yearLength.Equals(4))
@@ -165,6 +169,9 @@ namespace PaymentGateway.Api.Services
 {
         private static readonly FrozenSet<string> _allowedIsoList;
 
+        /// <summary>
+        /// Static constructor
+        /// </summary>
         static IsoCodeValidator()
         {
             _allowedIsoList = new[] {

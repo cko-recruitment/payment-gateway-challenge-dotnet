@@ -3,7 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace PaymentGateway.Api.Converters
 {
-    public class GuidJsonConverter : JsonConverter<Guid>
+    /// <summary>
+    /// Custom converter to handle the empty guid response from the bank response
+    /// </summary>
+    public sealed class GuidJsonConverter : JsonConverter<Guid>
     {
         public override Guid Read(
             ref Utf8JsonReader reader,

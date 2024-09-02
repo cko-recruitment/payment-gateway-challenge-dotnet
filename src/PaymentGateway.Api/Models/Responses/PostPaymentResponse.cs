@@ -1,5 +1,4 @@
-﻿using PaymentGateway.Api.Converters;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace PaymentGateway.Api.Models.Responses;
 
@@ -16,6 +15,10 @@ public class PostPaymentResponse
     public int? Amount { get; set; }
 }
 
+
+/// <summary>
+/// Payment response builder
+/// </summary>
 public class PostPaymentResponseBuilder()
 {
     private readonly PostPaymentResponse _paymentResponse = new PostPaymentResponse();
@@ -40,12 +43,18 @@ public class PostPaymentResponseBuilder()
     {
         return WithStatus(PaymentStatus.Declined);
     }
+
     public PostPaymentResponseBuilder WithStatus(PaymentStatus status)
     {
         _paymentResponse.Status = status;
         return this;
     }
 
+    /// <summary>
+    /// Handle trimming of the card number for persisting and returning to customer
+    /// </summary>
+    /// <param name="cardNumber"></param>
+    /// <returns></returns>
     public PostPaymentResponseBuilder WithCardNumberLastFour(long? cardNumber)
     {
         if (cardNumber == null)

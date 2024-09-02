@@ -2,6 +2,9 @@
 
 namespace PaymentGateway.Api.Models.Requests
 {
+    /// <summary>
+    /// Internal class for holding expected bank json property names
+    /// </summary>
     internal class BankPropertyName()
     {
         public const string CardNumber = "card_number";

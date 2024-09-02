@@ -1,5 +1,8 @@
 ﻿namespace PaymentGateway.Api.Models.Requests
 {
+    /// <summary>
+    /// Holds validated request properties
+    /// </summary>
     public class ValidatedPostPaymentRequest
     {
         public long CardNumber { get; set; }

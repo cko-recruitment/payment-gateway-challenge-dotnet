@@ -2,8 +2,12 @@
 
 namespace PaymentGateway.Api.Models.Requests;
 
+/// <summary>
+/// The payment request object
+/// </summary>
 public class PostPaymentRequest
 {
+    // Mark as required so model binding on the controller prevents these from being null
     [Required]
     public long? CardNumber { get; set; }
 

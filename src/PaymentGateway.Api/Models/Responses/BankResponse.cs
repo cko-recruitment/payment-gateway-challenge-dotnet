@@ -4,6 +4,9 @@ using PaymentGateway.Api.Converters;
 
 namespace PaymentGateway.Api.Models.Responses
 {
+    /// <summary>
+    /// Object to deserialize bank response too
+    /// </summary>
     public class BankResponse
     {
         [JsonPropertyName("authorized")]
