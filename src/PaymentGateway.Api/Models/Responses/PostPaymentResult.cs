@@ -10,7 +10,7 @@
         {
             IsSuccess = isSuccess;
             PostPaymentResponse = response;
-            ErrorMessage = errorMessage;
+            ErrorMessage = string.IsNullOrEmpty(errorMessage) ? string.Empty : errorMessage;
         }
     }
 }
