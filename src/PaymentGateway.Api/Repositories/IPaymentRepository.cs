@@ -5,6 +5,6 @@ namespace PaymentGateway.Api.Repositories
 {
     public interface IPaymentRepository
     {
-        Task<PostPaymentResult> PostAsync(PostPaymentRequestDto request);
+        Task<PostToBankResponseResult> PostAsync(PostPaymentRequestDto request);
     }
 }

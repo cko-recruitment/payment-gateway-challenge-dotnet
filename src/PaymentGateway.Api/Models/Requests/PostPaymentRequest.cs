@@ -6,8 +6,7 @@ namespace PaymentGateway.Api.Models.Requests;
 
 public class PostPaymentRequest
 {
-    [Required]
-    [Length(14, 19, ErrorMessage = "Card Number is not between 14 and 19 characters in length")]
+    [CardNumberValidation]
     public string CardNumber { get; set; }
 
     [Required]

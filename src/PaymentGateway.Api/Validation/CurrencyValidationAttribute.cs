@@ -6,17 +6,10 @@ namespace PaymentGateway.Api.Validation
 {
     public class CurrencyValidationAttribute : ValidationAttribute
     {
-        public CurrencyValidationAttribute()
+        public override bool IsValid(object? value)
         {
-            ErrorMessage = "The currency input provided is not supported";
-        }
-        public override bool IsValid(object value)
-        {
-            if (Enum.IsDefined(typeof(Currencies), value))
-            {
-                return true;
-            }
-            return false;
+            // not null or exists in currencies
+            return value == null || !Enum.TryParse<Currencies>(value.ToString(), out _) ? false : Enum.IsDefined(typeof(Currencies), value);
         }
     }
 }
