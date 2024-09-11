@@ -15,26 +15,30 @@ public class PaymentRepository : IPaymentRepository
         _httpClient.BaseAddress = new Uri(bankUrl);
     }
 
-    public async Task<PostPaymentResult> PostAsync(PostPaymentRequestDto request)
+    public async Task<PostToBankResponseResult> PostAsync(PostPaymentRequestDto request)
     {
         try
         {
             var response = await _httpClient.PostAsJsonAsync("/payments", request);
+            var content = await response.Content.ReadFromJsonAsync<PostToBankResponse>();
             if (response.IsSuccessStatusCode)
             {
-                var content = await response.Content.ReadFromJsonAsync<PostPaymentResponse>();
-                return new PostPaymentResult(true, content);
+                return new PostToBankResponseResult(true, content);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                return new PostToBankResponseResult(false, content, "Error while processing payment, bank returned error.");
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
-                return new PostPaymentResult(false, null, error);
+                var tryGetError = await response.Content.ReadAsStringAsync();
+                return new PostToBankResponseResult(false, null, tryGetError);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error occurred while processing payment");
-            return new PostPaymentResult(false, null, "An unexpected error occurred");
+            return new PostToBankResponseResult(false, null, $"An unexpected error occurred - Error:{ex.Message}");
         }
     }
 }

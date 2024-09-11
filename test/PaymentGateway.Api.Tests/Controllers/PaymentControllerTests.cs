@@ -18,15 +18,29 @@ public class PaymentControllerTests
     private readonly PaymentController _paymentController;
     private readonly Mock<IPaymentService> _mockPaymentService;
     private readonly PostPaymentResult _postPaymentResult;
+    private readonly PostPaymentRequest _postPaymentRequest;
+    private readonly PostToBankResponse _postToBankResponse;
     private readonly PostPaymentResponse _postPaymentResponse;
 
     public PaymentControllerTests()
     {
-        _postPaymentResponse = new PostPaymentResponse()
+        _postPaymentRequest = new PostPaymentRequest()
         {
-            AuthorizationCode = "123",
+            CardNumber = "1234567890123456",
+            ExpiryMonth = 12,
+            ExpiryYear = 2028,
+            Amount = 100,
+            Currency = "GBP",
+            Cvv = "123"
+        };
+
+        _postToBankResponse = new PostToBankResponse()
+        {
+            AuthorizationCode = "1231231",
             Authorized = true
         };
+
+        _postPaymentResponse = new PostPaymentResponse(_postPaymentRequest, _postToBankResponse);
         _postPaymentResult = new PostPaymentResult(true, _postPaymentResponse);
         _mockPaymentService = new Mock<IPaymentService>();
         _mockPaymentService.Setup(p => p.ProcessPaymentAsync(It.IsAny<PostPaymentRequest>()))
@@ -52,8 +66,7 @@ public class PaymentControllerTests
         var result = await _paymentController.PostPaymentAsync(postPaymentRequest);
 
         // Assert
-        Assert.Equal(_postPaymentResponse.AuthorizationCode, result.Value?.AuthorizationCode);
-        Assert.Equal(_postPaymentResponse.Authorized, result.Value?.Authorized);
+        Assert.Equal(_postPaymentResponse.Status, result.Value.Status);
         _mockPaymentService.Verify(x => x.ProcessPaymentAsync(postPaymentRequest), Times.Once());
     }
 
@@ -62,7 +75,7 @@ public class PaymentControllerTests
     {
         // Arrange
         _mockPaymentService.Setup(p => p.ProcessPaymentAsync(It.IsAny<PostPaymentRequest>()))
-            .ReturnsAsync(() => new PostPaymentResult(false, new PostPaymentResponse(), "Error"));
+            .ReturnsAsync(() => new PostPaymentResult(false, new PostPaymentResponse(_postPaymentRequest, _postToBankResponse), "Error"));
 
         // Act
         var result = await _paymentController.PostPaymentAsync(new PostPaymentRequest());
