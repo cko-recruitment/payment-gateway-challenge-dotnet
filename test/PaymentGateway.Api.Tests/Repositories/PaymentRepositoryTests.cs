@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 
 using Microsoft.Extensions.Logging;
 
@@ -16,6 +10,7 @@ using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Constants.Enums;
 using System.Text.Json;
 using PaymentGateway.Api.Models.Responses;
+using PaymentGateway.Api.Tests.MockStorageHelpers;
 
 namespace PaymentGateway.Api.Tests.Repositories
 {
@@ -112,7 +107,7 @@ namespace PaymentGateway.Api.Tests.Repositories
             // Assert
             Assert.False(result.IsSuccess);
             Assert.False(result.PostToBankResponse.Authorized);
-            Assert.Contains("Error while processing payment, bank returned error.", result.ErrorMessage);
+            Assert.Contains("Error while processing payment, bank returned error", result.ErrorMessage);
         }
 
         // bank endpoint down or any other error occurs
@@ -129,6 +124,64 @@ namespace PaymentGateway.Api.Tests.Repositories
             Assert.False(result.IsSuccess);
             Assert.Null(result.PostToBankResponse);
             Assert.Contains("An unexpected error occurred", result.ErrorMessage);
+        }
+
+        [Fact]
+        public async Task GetAsync_ShouldReturnSuccess_WhenValidRequest()
+        {
+            // Arrange
+            var paymentId = Guid.NewGuid();
+            var payment = MockPaymentStorageHelper.GenerateRandomPaymentAsString(paymentId);
+            _httpResponseMessage = new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(payment)
+            };
+
+            // Act
+            var result = await _paymentRepository.GetAsync(paymentId);
+
+            // Assert
+            Assert.True(result.IsSuccess);
+            Assert.NotNull(result.GetPaymentResponse);
+        }
+
+        [Fact]
+        public async Task GetAsync_ShouldReturnNotFound_WhenPaymentNotFound()
+        {
+            // Arrange
+            var paymentId = Guid.NewGuid();
+            _httpResponseMessage = new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Content = new StringContent(JsonSerializer.Serialize(new GetPaymentResponse()))
+            };
+
+            // Act
+            var result = await _paymentRepository.GetAsync(paymentId);
+
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Contains("Payment not found", result.ErrorMessage);
+            Assert.Null(result.GetPaymentResponse?.Id);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetAsync_ShouldReturnFailedResult_WhenUnexpectedError()
+        {
+            // Arrange
+            var paymentId = Guid.NewGuid();
+            _httpResponseMessage.Content = null;
+
+            // Act
+            var result = await _paymentRepository.GetAsync(paymentId);
+
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Null(result.GetPaymentResponse);
+            Assert.Contains("Unexpected error occurred", result.ErrorMessage);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
         }
     }
 }

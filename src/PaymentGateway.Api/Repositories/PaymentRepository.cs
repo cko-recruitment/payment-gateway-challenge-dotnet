@@ -1,5 +1,8 @@
-﻿using PaymentGateway.Api.Models.Requests;
+﻿using System.Net;
+
+using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
+using PaymentGateway.Api.Models.Results;
 
 namespace PaymentGateway.Api.Repositories;
 
@@ -15,7 +18,7 @@ public class PaymentRepository : IPaymentRepository
         _httpClient.BaseAddress = new Uri(bankUrl);
     }
 
-    public async Task<PostToBankResponseResult> PostAsync(PostPaymentRequestDto request)
+    public async Task<PostToBankResult> PostAsync(PostPaymentRequestDto request)
     {
         try
         {
@@ -23,22 +26,63 @@ public class PaymentRepository : IPaymentRepository
             var content = await response.Content.ReadFromJsonAsync<PostToBankResponse>();
             if (response.IsSuccessStatusCode)
             {
-                return new PostToBankResponseResult(true, content);
+                return new PostToBankResult(true, content);
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
             {
-                return new PostToBankResponseResult(false, content, "Error while processing payment, bank returned error.");
+                return new PostToBankResult(false, content, "Error while processing payment, bank returned error");
             }
             else
             {
                 var tryGetError = await response.Content.ReadAsStringAsync();
-                return new PostToBankResponseResult(false, null, tryGetError);
+                return new PostToBankResult(false, null, tryGetError ?? response.ReasonPhrase);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error occurred while processing payment");
-            return new PostToBankResponseResult(false, null, $"An unexpected error occurred - Error:{ex.Message}");
+            return new PostToBankResult(false, null, $"An unexpected error occurred - Error:{ex.Message}");
+        }
+    }
+
+    public async Task<GetPaymentResult> GetAsync(Guid id)
+    {
+        try
+        {
+            // assuming we're interacting with the database using some kind of rest api
+            var response = await _httpClient.GetAsync($"/get/payment/{id}");
+            var content = await response.Content.ReadFromJsonAsync<GetPaymentResponse>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return new GetPaymentResult(content);
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new GetPaymentResult()
+                {
+                    ErrorMessage = "Payment not found",
+                    IsSuccess = false,
+                    GetPaymentResponse = null,
+                    StatusCode = HttpStatusCode.NotFound
+                };
+            }
+            return new GetPaymentResult()
+            {
+                ErrorMessage = $"Error while getting payment Error:{response.ReasonPhrase}",
+                IsSuccess = false,
+                StatusCode = response.StatusCode
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error occurred while getting details for PaymentId:{id}", id);
+            return new GetPaymentResult()
+            {
+                ErrorMessage = $"Unexpected error occurred while getting details for PaymentId:{id} Error:{ex.Message}",
+                IsSuccess = false,
+                StatusCode = HttpStatusCode.InternalServerError
+            };
         }
     }
 }
