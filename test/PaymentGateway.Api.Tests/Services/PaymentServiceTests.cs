@@ -107,9 +107,5 @@ namespace PaymentGateway.Api.Tests.Services
             Assert.False(result.IsSuccess);
             Assert.True(result.PostPaymentResponse.Status == PaymentStatus.Declined.ToString());
         }
-
-        
-
-
     }
 }

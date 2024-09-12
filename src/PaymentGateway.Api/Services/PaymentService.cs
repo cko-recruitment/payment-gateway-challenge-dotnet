@@ -43,11 +43,9 @@ namespace PaymentGateway.Api.Services
             return result;
         }
 
-
         private static bool IsValidExpiryDate(int expiryMonth, int expiryYear)
         {
             return expiryYear == DateTime.Now.Year ? expiryMonth > DateTime.Now.Month : expiryYear > DateTime.Now.Year;
         }
     }
 }
-
