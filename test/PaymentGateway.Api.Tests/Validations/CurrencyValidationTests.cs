@@ -37,6 +37,6 @@ namespace PaymentGateway.Api.Tests.Validations
 
             // Assert
             Assert.False(result);
-        }  
+        }
     }
 }

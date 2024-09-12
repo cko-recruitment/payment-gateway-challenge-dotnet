@@ -1,4 +1,3 @@
-using PaymentGateway.Api.Constants.Enums;
 using PaymentGateway.Api.Models.Requests;
 
 namespace PaymentGateway.Api.Models.Responses;

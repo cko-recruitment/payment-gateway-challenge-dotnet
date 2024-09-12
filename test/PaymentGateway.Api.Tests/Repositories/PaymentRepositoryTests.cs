@@ -1,15 +1,15 @@
 ﻿using System.Net;
+using System.Text.Json;
 
 using Microsoft.Extensions.Logging;
 
 using Moq;
 using Moq.Protected;
 
-using PaymentGateway.Api.Repositories;
-using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Constants.Enums;
-using System.Text.Json;
+using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
+using PaymentGateway.Api.Repositories;
 using PaymentGateway.Api.Tests.MockStorageHelpers;
 
 namespace PaymentGateway.Api.Tests.Repositories

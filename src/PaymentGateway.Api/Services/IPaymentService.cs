@@ -1,5 +1,4 @@
 ﻿using PaymentGateway.Api.Models.Requests;
-using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Api.Models.Results;
 
 namespace PaymentGateway.Api.Services
