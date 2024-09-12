@@ -6,6 +6,7 @@ namespace PaymentGateway.Api.Validation
     {
         public override bool IsValid(object? value)
         {
+            // current year is valid, validation is in service to check month and year
             if (value != null && value is int year)
             {
                 return year >= DateTime.Now.Year;

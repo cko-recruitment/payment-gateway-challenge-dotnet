@@ -1,15 +1,15 @@
 ﻿namespace PaymentGateway.Api.Models.Responses
 {
-    public class PostPaymentResult
+    public class PostToBankResult
     {
         public bool IsSuccess { get; set; }
-        public PostPaymentResponse PostPaymentResponse { get; set; }
+        public PostToBankResponse PostToBankResponse { get; set; }
         public string ErrorMessage { get; set; }
 
-        public PostPaymentResult(bool isSuccess, PostPaymentResponse response, string? errorMessage = null)
+        public PostToBankResult(bool isSuccess, PostToBankResponse postToBankResponse, string? errorMessage = null)
         {
             IsSuccess = isSuccess;
-            PostPaymentResponse = response;
+            PostToBankResponse = postToBankResponse;
             ErrorMessage = string.IsNullOrEmpty(errorMessage) ? string.Empty : errorMessage;
         }
     }

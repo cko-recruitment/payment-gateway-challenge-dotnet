@@ -1,10 +1,10 @@
 ﻿using PaymentGateway.Api.Constants.Enums;
 
-namespace PaymentGateway.Api.Models.Responses
+namespace PaymentGateway.Api.Tests.MockStorageHelpers.Models
 {
-    public class GetPaymentResponse
+    // defining duplicate separate class as this shouldnt exist
+    public class Payment
     {
-        // defining duplicate class identical to Payment on purpose
         public Guid Id { get; set; }
         public PaymentStatus Status { get; set; }
         public string CardNumber { get; set; }

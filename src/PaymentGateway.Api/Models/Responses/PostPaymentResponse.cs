@@ -13,21 +13,10 @@ public class PostPaymentResponse
     public string Currency { get; set; }
     public int Amount { get; set; }
 
-    public PostPaymentResponse(PostPaymentRequest postPaymentRequest, PostToBankResponse postToBankResponse)
+    public PostPaymentResponse(PostPaymentRequest postPaymentRequest, string status)
     {
         Id = Guid.NewGuid();
-        Status = postToBankResponse.Authorized ? PaymentStatus.Authorized.ToString() : PaymentStatus.Declined.ToString();
-        CardNumberLastFour = int.TryParse(postPaymentRequest.CardNumber[^4..], out var lastFour) ? lastFour : 0;
-        ExpiryMonth = postPaymentRequest.ExpiryMonth;
-        ExpiryYear = postPaymentRequest.ExpiryYear;
-        Currency = postPaymentRequest.Currency;
-        Amount = postPaymentRequest.Amount;
-    }
-
-    public PostPaymentResponse(PostPaymentRequest postPaymentRequest)
-    {
-        Id = Guid.NewGuid();
-        Status = PaymentStatus.Rejected.ToString();
+        Status = status; // authorized or declined
         CardNumberLastFour = int.TryParse(postPaymentRequest.CardNumber[^4..], out var lastFour) ? lastFour : 0;
         ExpiryMonth = postPaymentRequest.ExpiryMonth;
         ExpiryYear = postPaymentRequest.ExpiryYear;
