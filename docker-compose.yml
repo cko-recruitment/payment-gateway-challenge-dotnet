@@ -7,7 +7,7 @@ services:
     ports:
       - "2525:2525"
       - "8080:8080"
-    command: --configfile /imposters/bank_simulator.ejs
+    command: --configfile /imposters/bank_simulator.ejs --allowInjection
     volumes:
       - type: bind
         source: ./imposters

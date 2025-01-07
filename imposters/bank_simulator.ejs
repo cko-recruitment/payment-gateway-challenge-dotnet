@@ -1,6 +1,5 @@
 {
-    "imposters": [
-        {
+    "imposters": [{
             "port": 8080,
             "protocol": "http",
             "name": "Bank simulator",
@@ -14,59 +13,82 @@
                     "errorMessage": "The request supplied is not supported by the simulator"
                 }
             },
-            "stubs": [
-                {
-                    "predicates": [
-                        {
-                            "equals": {
-                                "body" : {
-                                    "card_number": "2222405343248877",
-                                    "expiry_date": "04/2025",
-                                    "currency": "GBP",
-                                    "amount": 100,
-                                    "cvv": 123
-                                },
-                                "method": "POST",
-                                "path": "/payments"
+            "stubs": [{
+                    "predicates": [{
+						"and": [
+							{ "equals": { "method": "POST", "path": "/payments" } }, 
+							{ "or": [
+								{ "exists": {"body": {"card_number": false}} },
+								{ "exists": {"body": {"expiry_date": false}} },
+								{ "exists": {"body": {"currency": false}} },
+								{ "exists": {"body": {"amount": false}} },
+								{ "exists": {"body": {"cvv": false}} }
+							]}
+						]}
+                    ],
+                    "responses": [{
+                            "is": {
+                                "statusCode": 400,
+                                "body": { "error_message": "Not all required properties were sent in the request" }
                             }
+                        }]
+                }, {
+                    "predicates": [{
+                            "and": [
+								{ "equals": { "method": "POST", "path": "/payments" } }, 
+								{ "or": [
+									{ "endsWith": { "body": { "card_number": "1" } } },
+									{ "endsWith": { "body": { "card_number": "3" } } },
+									{ "endsWith": { "body": { "card_number": "5" } } },
+									{ "endsWith": { "body": { "card_number": "7" } } },
+									{ "endsWith": { "body": { "card_number": "9" } } }
+                                ]}
+                            ]
                         }
                     ],
-                    "responses": [
-                        {
+                    "responses": [{
                             "is": {
                                 "statusCode": 200,
-                                "body": {
-                                    "authorized": true,
-                                    "authorization_code": "0bb07405-6d44-4b50-a14f-7ae0beff13ad"
+                                "body": { "authorized": true, "authorization_code": "${auth_code}" }
+                            },
+                            "behaviors": [{
+                                    "decorate": "(config) => { function newGuid() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }) }config.response.body.authorization_code = config.response.body.authorization_code.replace('${auth_code}', newGuid()); }"
                                 }
+                            ]
+                        }
+                    ]
+                }, {
+                    "predicates": [{
+                            "and": [
+								{ "equals": { "method": "POST", "path": "/payments" } }, 
+								{ "or": [
+									{ "endsWith": { "body": { "card_number": "2" } } },
+									{ "endsWith": { "body": { "card_number": "4" } } },
+									{ "endsWith": { "body": { "card_number": "6" } } },
+									{ "endsWith": { "body": { "card_number": "8" } } }
+                                ]}
+                            ]
+                        }
+                    ],
+                    "responses": [{
+                            "is": {
+                                "statusCode": 200,
+                                "body": { "authorized": false, "authorization_code": "" }
                             }
                         }
                     ]
-                },
-                {
-                    "predicates": [
-                        {
-                            "equals": {
-                                "body" : {
-                                    "card_number": "2222405343248112",
-                                    "expiry_date": "01/2026",
-                                    "currency": "USD",
-                                    "amount": 60000,
-                                    "cvv": 456
-                                },
-                                "method": "POST",
-                                "path": "/payments"
-                            }
+                }, {
+                    "predicates": [{
+                            "and": [
+								{ "equals": { "method": "POST", "path": "/payments" } }, 
+								{ "endsWith": { "body": { "card_number": "0" } } }
+                            ]
                         }
                     ],
-                    "responses": [
-                        {
+                    "responses": [{
                             "is": {
-                                "statusCode": 200,
-                                "body": {
-                                    "authorized": false,
-                                    "authorization_code": ""
-                                }
+                                "statusCode": 503,
+                                "body": {}
                             }
                         }
                     ]
