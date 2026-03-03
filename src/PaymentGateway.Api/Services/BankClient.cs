@@ -23,7 +23,16 @@ public class BankClient : IBankClient
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("/payments", request);
+            var bankRequest = new BankPaymentRequest
+            {
+                CardNumber = request.CardNumber,
+                ExpiryDate = $"{request.ExpiryMonth:D2}/{request.ExpiryYear}",
+                Currency = request.Currency,
+                Amount = request.Amount,
+                Cvv = request.Cvv
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("/payments", bankRequest);
 
             if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
             {

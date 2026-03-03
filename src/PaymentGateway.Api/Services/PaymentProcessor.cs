@@ -12,10 +12,17 @@ public interface IPaymentProcessor
 public class PaymentProcessor : IPaymentProcessor
 {
     private readonly PaymentsRepository _repository;
+    private readonly IBankClient? _bankClient;
    
     public PaymentProcessor(PaymentsRepository repository)
+        : this(repository, null)
+    {
+    }
+
+    public PaymentProcessor(PaymentsRepository repository, IBankClient? bankClient)
     {
         _repository = repository;
+        _bankClient = bankClient;
     }
 
     public async Task<PostPaymentResponse?> ProcessAsync(PostPaymentRequest request)
@@ -27,11 +34,7 @@ public class PaymentProcessor : IPaymentProcessor
             return validationError;
         }
 
-        PaymentStatus status;
-
-        if (Convert.ToInt32(request.CardNumber[^1]) % 2 == 0)
-            status = PaymentStatus.Declined;
-        status = PaymentStatus.Authorized;
+        var status = await ResolvePaymentStatusAsync(request);
 
         var response = new PostPaymentResponse
         {
@@ -48,6 +51,25 @@ public class PaymentProcessor : IPaymentProcessor
         return response;
 
     }
+
+    private async Task<PaymentStatus> ResolvePaymentStatusAsync(PostPaymentRequest request)
+    {
+        if (_bankClient != null)
+        {
+            var bankResponse = await _bankClient.ProcessPaymentAsync(request);
+            if (bankResponse == null)
+            {
+                return PaymentStatus.Declined;
+            }
+
+            return bankResponse.Authorized ? PaymentStatus.Authorized : PaymentStatus.Declined;
+        }
+
+        return Convert.ToInt32(request.CardNumber[^1]) % 2 == 0
+            ? PaymentStatus.Declined
+            : PaymentStatus.Authorized;
+    }
+
     private PostPaymentResponse? ValidatePaymentRequest(PostPaymentRequest request)
     {
         if (request == null)

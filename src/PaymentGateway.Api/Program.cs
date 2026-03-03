@@ -9,7 +9,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var bankApiBaseUrl = builder.Configuration["BankApi:BaseUrl"] ?? "http://localhost:8080";
+
 builder.Services.AddSingleton<PaymentsRepository>();
+builder.Services.AddHttpClient<IBankClient, BankClient>(client =>
+{
+    client.BaseAddress = new Uri(bankApiBaseUrl);
+});
 builder.Services.AddSingleton<IPaymentProcessor, PaymentProcessor>();
 
 var app = builder.Build();
