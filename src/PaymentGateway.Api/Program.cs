@@ -1,3 +1,6 @@
+using PaymentGateway.Api.Common.GuidGenerator;
+using PaymentGateway.Api.Infrastructure.Clients.BankSimulator;
+using PaymentGateway.Api.Repositories.Payment;
 using PaymentGateway.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +12,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<PaymentsRepository>();
+builder.Services.AddSingleton<IPaymentRepository, PaymentsRepository>();
+builder.Services.AddSingleton<IGuidGenerator, GuidGenerator>();
+builder.Services.AddScoped<PaymentService>();
+
+builder.Services.AddHttpClient<IBankSimulator, BankSimulator>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:8080/");
+});
 
 var app = builder.Build();
 

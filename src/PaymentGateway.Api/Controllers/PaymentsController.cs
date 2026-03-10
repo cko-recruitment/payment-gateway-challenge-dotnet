@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using PaymentGateway.Api.Common.Extensions;
+using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Api.Services;
 
@@ -7,20 +9,22 @@ namespace PaymentGateway.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PaymentsController : Controller
+public class PaymentsController(PaymentService paymentService) : Controller
 {
-    private readonly PaymentsRepository _paymentsRepository;
-
-    public PaymentsController(PaymentsRepository paymentsRepository)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<PaymentResponse>> GetPaymentAsync(Guid id)
     {
-        _paymentsRepository = paymentsRepository;
+        var result = paymentService.GetPayment(id);
+        return result.ToActionResult(this);
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<PostPaymentResponse?>> GetPaymentAsync(Guid id)
+    [HttpPost]
+    public async Task<ActionResult<PaymentResponse>> PostPaymentAsync(
+        [FromHeader(Name = "Idempotency-Key")] string? idempotencyKey,
+        [FromBody] PostPaymentRequest request)
     {
-        var payment = _paymentsRepository.Get(id);
+        var result = await paymentService.ProcessPaymentAsync(request, idempotencyKey);
 
-        return new OkObjectResult(payment);
+        return result.ToActionResult(this);
     }
 }
