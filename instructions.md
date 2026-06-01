@@ -141,6 +141,3 @@ The simulator is implemented using [Mountebank](https://github.com/mountebank-te
 The configuration is stored in the `imposters` directory of this repo as an [ejs template](https://ejs.co/). Typically
 engineers would not use an EJS template, however for this test it works well. The preferred way to use Mountebank or
 similar products (e.g. WireMock) is to call it's API during your test setup via a client library.
-
-## Get help
-If you have any questions or queries on any of the above, please contact the recruiter who is responsible for managing your individual process or careers@checkout.com.
