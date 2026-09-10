@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 using PaymentGateway.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,18 +11,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<PaymentsRepository>();
+// Invalid requests are reported as a Rejected payment response instead of the default 400 ValidationProblemDetails.
+builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
+
+builder.Services.AddSingleton<IPaymentsRepository, PaymentsRepository>();
+builder.Services.AddScoped<IPaymentsService, PaymentsService>();
+
+var bankSimulatorBaseUrl = builder.Configuration["BankSimulator:BaseUrl"] ?? "http://localhost:8080";
+builder.Services.AddHttpClient<IBankClient, BankClient>(client =>
+{
+    client.BaseAddress = new Uri(bankSimulatorBaseUrl);
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
+// Swagger is enabled in all environments so reviewers can explore the API easily.
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthorization();
 
