@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 using PaymentGateway.Api.Middleware;
 using PaymentGateway.Api.Services;
 
@@ -5,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // Add services to the container.
 
