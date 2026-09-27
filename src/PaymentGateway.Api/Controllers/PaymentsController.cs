@@ -43,11 +43,11 @@ public class PaymentsController(
         payment.RecordMetrics();
 
         var response = payment.ToResponse();
-        return CreatedAtRoute(nameof(GetPaymentAsync), new { id = response.Id }, response);
+        return CreatedAtRoute(nameof(GetPayment), new { id = response.Id }, response);
     }
 
-    [HttpGet("{id:guid}", Name = nameof(GetPaymentAsync))]
-    public async Task<ActionResult<PaymentResponse?>> GetPaymentAsync(Guid id)
+    [HttpGet("{id:guid}", Name = nameof(GetPayment))]
+    public ActionResult<PaymentResponse?> GetPayment(Guid id)
     {
         var payment = paymentsRepository.Get(id);
 

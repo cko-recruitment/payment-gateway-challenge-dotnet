@@ -35,12 +35,33 @@ public class ExceptionHandlingTests
         await AssertProblem(factory, HttpStatusCode.InternalServerError, "An unexpected error occurred.");
     }
 
+    [Fact]
+    public async Task Bank_timeout_returns_generic_500_without_storing_a_payment()
+    {
+        bool bankCallWasCancelled = false;
+        await using var factory = CreateFactory(new BankHandler(async cancellationToken =>
+        {
+            try
+            {
+                await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            finally
+            {
+                bankCallWasCancelled = cancellationToken.IsCancellationRequested;
+            }
+        }), bankTimeout: TimeSpan.FromMilliseconds(100));
+
+        await AssertProblem(factory, HttpStatusCode.InternalServerError, "An unexpected error occurred.");
+        Assert.True(bankCallWasCancelled);
+    }
+
     [Theory]
     [InlineData("{}")]
     [InlineData("{\"authorized\":true,\"authorization_code\":\" \"}")]
     public async Task Bank_incomplete_authorization_returns_payment_error_500(string body)
     {
-        using var factory = CreateFactory(BankResponds(HttpStatusCode.OK, body));
+        await using var factory = CreateFactory(BankResponds(HttpStatusCode.OK, body));
 
         await AssertProblem(factory, HttpStatusCode.InternalServerError, "An unexpected error occurred while processing the payment.");
     }
@@ -97,7 +118,8 @@ public class ExceptionHandlingTests
         Assert.Empty(factory.Services.GetRequiredService<PaymentsRepository>().Payments);
     }
 
-    private static WebApplicationFactory<PaymentsController> CreateFactory(BankHandler handler, string environment = "Development") =>
+    private static WebApplicationFactory<PaymentsController> CreateFactory(
+        BankHandler handler, string environment = "Development", TimeSpan? bankTimeout = null) =>
         new WebApplicationFactory<PaymentsController>().WithWebHostBuilder(builder =>
         {
             builder.UseEnvironment(environment);
@@ -107,6 +129,7 @@ public class ExceptionHandlingTests
             {
                 services.AddSingleton<TimeProvider>(new FixedTimeProvider());
                 services.AddHttpClient<IAcquiringBankClient, AcquiringBankClient>()
+                    .ConfigureHttpClient(client => client.Timeout = bankTimeout ?? TimeSpan.FromSeconds(5))
                     .ConfigurePrimaryHttpMessageHandler(() => handler);
             });
         });

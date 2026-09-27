@@ -146,8 +146,26 @@ public class PaymentValidatorTests
         Assert.Null(PaymentValidator.Validate(request, new DateTime(2026, 12, 31)));
     }
 
-    // The assignment does not specify whether the current expiry month is valid
-    // through month-end. That policy needs a decision before adding its test.
+    [Theory]
+    [InlineData(-357911911)]
+    [InlineData(int.MinValue)]
+    public void Negative_expiry_year_is_rejected_without_overflow(int year)
+    {
+        CreatePaymentRequest request = ValidRequest();
+        request.ExpiryYear = year;
+
+        AssertInvalid(request, nameof(request.ExpiryYear), "Expiry month and year must not be in the past.");
+    }
+
+    [Fact]
+    public void Expiry_in_the_current_month_is_rejected()
+    {
+        CreatePaymentRequest request = ValidRequest();
+        request.ExpiryYear = Today.Year;
+        request.ExpiryMonth = Today.Month;
+
+        AssertInvalid(request, nameof(request.ExpiryYear), "Expiry month and year must not be in the past.");
+    }
 
     [Fact]
     public void Currency_is_required()

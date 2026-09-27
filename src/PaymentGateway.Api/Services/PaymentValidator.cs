@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-
 using PaymentGateway.Api.Models.Requests;
 
 namespace PaymentGateway.Api.Services;
@@ -53,17 +51,7 @@ public static class PaymentValidator
         };
 
     private static bool IsDigits(string value) => value.All(character => character is >= '0' and <= '9');
-    private static bool IsInFuture(int year, int month, DateTime today) => (year * 12 + month) > (today.Year * 12 + today.Month);
 
-
-    extension(ValidationError error)
-    {
-        public ValidationProblemDetails ToProblemDetails() =>
-            new()
-            {
-                Title = "Request is invalid.",
-                Status = StatusCodes.Status400BadRequest,
-                Detail = $"Field '{error.Field}' is invalid: {string.Join(", ", error.Messages)}"
-            };
-    }
+    private static bool IsInFuture(int year, int month, DateTime today) =>
+        year > today.Year || (year == today.Year && month > today.Month);
 }
