@@ -14,7 +14,7 @@ public static class CreatePaymentRequestExtensions
 {
     extension(CreatePaymentRequest request)
     {
-        public Payment ToPayment() =>
+        public PaymentModel ToPayment() =>
             new()
             {
                 CardNumber = request.CardNumber ?? throw new ArgumentNullException(nameof(request.CardNumber)),
@@ -25,6 +25,6 @@ public static class CreatePaymentRequestExtensions
                 Cvv = request.Cvv ?? throw new ArgumentNullException(nameof(request.Cvv)),
             };
 
-        public Payment ToPayment(BankAuthorization bankAuthorization) => request.ToPayment() with { BankAuthorization = bankAuthorization };
+        public PaymentModel ToPayment(BankAuthorization bankAuthorization) => request.ToPayment() with { BankAuthorization = bankAuthorization };
     }
 }

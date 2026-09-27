@@ -1,10 +1,10 @@
 ﻿using PaymentGateway.Api.Enums;
 
-namespace PaymentGateway.Api.Models.Requests;
+namespace PaymentGateway.Api.Models;
 
 
 public record BankAuthorization(PaymentStatus Status, string? AuthorizationCode = null);
-public record Payment
+public record PaymentModel
 {
     public Guid Id { get; init; } = Guid.NewGuid();
     public required string CardNumber { get; init; }

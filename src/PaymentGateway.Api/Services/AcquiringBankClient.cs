@@ -9,7 +9,7 @@ namespace PaymentGateway.Api.Services;
 public interface IAcquiringBankClient
 {
     // In production code, I would use a more robust and intuitive approach such as a discriminated union, or a Result<T> type, but for the sake of this exercise, I will use a nullable string to indicate authorized or not.
-    Task<string?> AuthorizeAsync(Payment request, CancellationToken cancellationToken);
+    Task<string?> AuthorizeAsync(PaymentModel request, CancellationToken cancellationToken);
 }
 
 public class AcquiringBankClient: IAcquiringBankClient
@@ -21,14 +21,14 @@ public class AcquiringBankClient: IAcquiringBankClient
         _httpClient = httpClient;
     }
 
-    public async Task<string?> AuthorizeAsync(Payment payment, CancellationToken cancellationToken)
+    public async Task<string?> AuthorizeAsync(PaymentModel paymentModel, CancellationToken cancellationToken)
     {
         BankPaymentRequest bankRequest = new(
-            CardNumber: payment.CardNumber,
-            ExpiryDate: $"{payment.ExpiryMonth:00}/{payment.ExpiryYear:0000}",
-            Currency: payment.Currency,
-            Amount: payment.Amount,
-            Cvv: payment.Cvv);
+            CardNumber: paymentModel.CardNumber,
+            ExpiryDate: $"{paymentModel.ExpiryMonth:00}/{paymentModel.ExpiryYear:0000}",
+            Currency: paymentModel.Currency,
+            Amount: paymentModel.Amount,
+            Cvv: paymentModel.Cvv);
         
         
         var response = await _httpClient.PostAsJsonAsync(

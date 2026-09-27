@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 using PaymentGateway.Api.Controllers;
+using PaymentGateway.Api.Models;
 using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Api.Services;
@@ -18,7 +19,7 @@ public class PaymentsControllerTests
     public async Task RetrievesAPaymentSuccessfully()
     {
         // Arrange
-        var payment = new Payment
+        var payment = new PaymentModel
         {
             Id = Guid.NewGuid(),
             ExpiryYear = _random.Next(2023, 2030),
@@ -26,8 +27,7 @@ public class PaymentsControllerTests
             Amount = _random.Next(1, 10000),
             CardNumber = "123412341234" + _random.Next(1111, 9999),
             Currency = "GBP",
-            Cvv = _random.Next(100, 999).ToString(),
-            BankAuthorization = null
+            Cvv = _random.Next(100, 999).ToString()
         };
 
         var paymentsRepository = new PaymentsRepository();

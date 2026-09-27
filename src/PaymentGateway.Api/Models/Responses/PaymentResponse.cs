@@ -16,18 +16,18 @@ public class PaymentResponse
 
 public static class PaymentExtensions
 {
-    extension(Payment payment)
+    extension(PaymentModel paymentModel)
     {
         public PaymentResponse ToResponse() =>
             new()
             {
-                Id = payment.Id,
-                Status = payment.BankAuthorization.Status,
-                CardNumberLastFour = payment.CardNumber[^4..],
-                ExpiryMonth = payment.ExpiryMonth,
-                ExpiryYear = payment.ExpiryYear,
-                Currency = payment.Currency,
-                Amount = payment.Amount
+                Id = paymentModel.Id,
+                Status = paymentModel.BankAuthorization.Status,
+                CardNumberLastFour = paymentModel.CardNumber[^4..],
+                ExpiryMonth = paymentModel.ExpiryMonth,
+                ExpiryYear = paymentModel.ExpiryYear,
+                Currency = paymentModel.Currency,
+                Amount = paymentModel.Amount
             };
     }
 }
