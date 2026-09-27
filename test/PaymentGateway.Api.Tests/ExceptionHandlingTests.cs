@@ -75,7 +75,7 @@ public class ExceptionHandlingTests
         var problem = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
         Assert.NotNull(problem);
         Assert.Equal(400, problem!.Status);
-        Assert.Equal("Payment request is invalid.", problem.Title);
+        Assert.Equal("Request is invalid.", problem.Title);
         Assert.Equal("Field 'Amount' is invalid: Amount is required and must be a positive integer in minor units.", problem.Detail);
     }
 

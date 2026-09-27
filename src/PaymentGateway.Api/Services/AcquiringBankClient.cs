@@ -13,7 +13,7 @@ public interface IAcquiringBankClient
     Task<string?> AuthorizeAsync(BankPaymentRequest request, CancellationToken cancellationToken);
 }
 
-public class AcquiringBankClient: IAcquiringBankClient
+public class AcquiringBankClient : IAcquiringBankClient
 {
     private readonly HttpClient _httpClient;
 
@@ -43,13 +43,13 @@ public class AcquiringBankClient: IAcquiringBankClient
         }
 
         ErrorBody? error = null;
-        if( response.StatusCode == HttpStatusCode.BadRequest)
+        if (response.StatusCode == HttpStatusCode.BadRequest)
         {
             error = await response.Content.ReadFromJsonAsync<ErrorBody>(cancellationToken);
         }
-        
+
         throw new BankException((int)response.StatusCode, error?.GetMessage() ?? string.Empty);
-        
+
         // In production, transport-level failures (e.g. timeouts and connection errors) could be translated into
         // bank-specific exceptions by an HttpClient delegating handler (in Program.cs): 
         // services

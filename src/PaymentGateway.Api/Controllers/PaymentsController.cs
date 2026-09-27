@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+
+using Microsoft.AspNetCore.Mvc;
 
 using PaymentGateway.Api.Enums;
 using PaymentGateway.Api.Models;
@@ -23,28 +25,24 @@ public class PaymentsController(
         [FromBody] CreatePaymentRequest request,
         CancellationToken cancellationToken)
     {
+        request.RecordInActivityTags(); // this can become a generic middleware as a cross-cutting concern
+
         if (PaymentValidator.Validate(request, timeProvider.GetUtcNow().DateTime) is { } errors)
         {
-            return BadRequest(new ValidationProblemDetails
-            {
-                Title = "Payment request is invalid.",
-                Status = StatusCodes.Status400BadRequest,
-                Detail = $"Field '{errors.Field}' is invalid: {string.Join(", ", errors.Messages)}"
-            });
+            return BadRequest(errors.ToProblemDetails());
         }
-        
-        var bankAuthResult = await acquiringBankClient.AuthorizeAsync(request.ToBankPaymentRequest(), cancellationToken);
 
-        var bankAuthStatus = bankAuthResult is null ? PaymentStatus.Declined : PaymentStatus.Authorized;
-        
-        var bankAccountAuth = new BankAuthorization(bankAuthStatus, bankAuthResult);
+        var bankAuthResult = await acquiringBankClient.AuthorizeAsync(request.ToBankPaymentRequest(), cancellationToken);
+        var bankAccountAuth = bankAuthResult is null
+            ? new BankAuthorization(PaymentStatus.Declined)
+            : new BankAuthorization(PaymentStatus.Authorized, bankAuthResult);
 
         var payment = request.ToPaymentModel(bankAccountAuth);
-        
         paymentsRepository.Add(payment);
 
-        var  response = payment.ToResponse();
-        
+        Activity.Current?.SetTag("payment.id", payment.Id);
+
+        var response = payment.ToResponse();
         return CreatedAtRoute(nameof(GetPaymentAsync), new { id = response.Id }, response);
     }
 
@@ -52,7 +50,7 @@ public class PaymentsController(
     public async Task<ActionResult<PaymentResponse?>> GetPaymentAsync(Guid id)
     {
         var payment = paymentsRepository.Get(id);
-        
+
         return payment?.ToResponse() switch
         {
             { } response => Ok(response),

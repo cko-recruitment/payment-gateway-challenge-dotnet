@@ -25,10 +25,10 @@ public class PaymentsControllerExceptionFilter(ILogger<PaymentsControllerExcepti
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "An unexpected error occurred while processing the payment."
             });
-                    
+
             context.ExceptionHandled = true;
         }
-        
+
         return Task.CompletedTask;
     }
 }

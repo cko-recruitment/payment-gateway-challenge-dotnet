@@ -21,7 +21,7 @@ namespace PaymentGateway.Api.Tests;
 public class PaymentsControllerTests
 {
     private readonly Random _random = new();
-    
+
     [Fact]
     public async Task Payment_is_created_successfully()
     {
@@ -43,7 +43,7 @@ public class PaymentsControllerTests
         Assert.Equal(request.Currency, paymentResponse.Currency);
         Assert.Equal(request.Amount, paymentResponse.Amount);
         Assert.Equal("Authorized", paymentResponse.Status.ToString());
-        
+
         // verify that the payment was stored in the repository
         Assert.Single(repository.Payments);
         var payment = repository.Payments[0];
@@ -59,7 +59,7 @@ public class PaymentsControllerTests
     public async Task Invalid_request_returns_bad_request_with_validation_problem_details()
     {
         // Arrange
-        var request = GetValidRequest(); 
+        var request = GetValidRequest();
         request.CardNumber = "123"; // Invalid card number
         var webApplicationFactory = CreateFactory();
         var client = webApplicationFactory.CreateClient();
@@ -71,10 +71,10 @@ public class PaymentsControllerTests
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.NotNull(problemDetails);
-        Assert.Equal("Payment request is invalid.", problemDetails!.Title);
+        Assert.Equal("Request is invalid.", problemDetails!.Title);
         Assert.Equal(StatusCodes.Status400BadRequest, problemDetails.Status);
     }
-    
+
     [Fact]
     public async Task Payment_status_is_declined_when_authorization_is_declined_by_bank()
     {
@@ -92,7 +92,7 @@ public class PaymentsControllerTests
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.Equal("Declined", paymentResponse!.Status.ToString());
     }
-    
+
 
     [Fact]
     public async Task Payment_creation_fails_with_InternalServerError_when_bank_returns_503()
@@ -113,10 +113,10 @@ public class PaymentsControllerTests
         Assert.NotNull(problemDetails);
         Assert.Equal("An unexpected error occurred while processing the payment.", problemDetails!.Title);
         Assert.Equal(StatusCodes.Status500InternalServerError, problemDetails.Status);
-        
+
         Assert.Empty(repository.Payments);  // Ensure no payment was stored in the repository
     }
-    
+
 
     [Fact]
     public async Task Stored_payment_can_be_retrieved()
@@ -145,7 +145,7 @@ public class PaymentsControllerTests
         // Act
         var response = await client.GetAsync($"/api/Payments/{payment.Id}");
         var paymentResponse = await response.Content.ReadFromJsonAsync<PaymentResponse>();
-        
+
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(paymentResponse);
@@ -157,16 +157,16 @@ public class PaymentsControllerTests
         // Arrange
         var webApplicationFactory = CreateFactory();
         var client = webApplicationFactory.CreateClient();
-        
+
         // Act
         var response = await client.GetAsync($"/api/Payments/{Guid.NewGuid()}");
-        
+
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-    
-    
-    
+
+
+
     // Helper methods
     private static WebApplicationFactory<PaymentsController> CreateFactory(string environment = "Development") =>
         new WebApplicationFactory<PaymentsController>().WithWebHostBuilder(builder =>
@@ -178,7 +178,7 @@ public class PaymentsControllerTests
                 services.AddSingleton<TimeProvider>(new FixedTimeProvider());
             });
         });
-    
+
     private static CreatePaymentRequest GetValidRequest() => new()
     {
         CardNumber = "1234567890121235",
@@ -188,7 +188,7 @@ public class PaymentsControllerTests
         Amount = 100,
         Cvv = "123"
     };
-    
+
     private sealed class FixedTimeProvider : TimeProvider
     {
         public override DateTimeOffset GetUtcNow() => new(2026, 9, 26, 12, 0, 0, TimeSpan.Zero);

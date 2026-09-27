@@ -31,5 +31,3 @@ public static class PaymentResponseExtensions
             };
     }
 }
-    
-
