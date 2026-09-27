@@ -10,11 +10,13 @@ namespace PaymentGateway.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[TypeFilter(typeof(PaymentsControllerExceptionFilter))]
+
 public class PaymentsController(
     PaymentsRepository paymentsRepository,
     IAcquiringBankClient acquiringBankClient,
     TimeProvider timeProvider)
-    : Controller
+    : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<PaymentResponse>> CreatePaymentAsync(
@@ -43,10 +45,10 @@ public class PaymentsController(
 
         var  response = payment.ToResponse();
         
-        return CreatedAtAction(nameof(GetPaymentAsync), new { id = response.Id }, response);
+        return CreatedAtRoute(nameof(GetPaymentAsync), new { id = response.Id }, response);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = nameof(GetPaymentAsync))]
     public async Task<ActionResult<PaymentResponse?>> GetPaymentAsync(Guid id)
     {
         var payment = paymentsRepository.Get(id);

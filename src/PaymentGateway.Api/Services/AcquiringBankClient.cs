@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using PaymentGateway.Api.Models;
@@ -31,7 +32,7 @@ public class AcquiringBankClient: IAcquiringBankClient
             Cvv: paymentModel.Cvv);
         
         
-        var response = await _httpClient.PostAsJsonAsync(
+        using var response = await _httpClient.PostAsJsonAsync(
             "payments",
             bankRequest,
             cancellationToken);
@@ -39,30 +40,43 @@ public class AcquiringBankClient: IAcquiringBankClient
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<BankPaymentResponse>(cancellationToken);
-            
-            if (result?.Authorized is true) // I'd check and throw an exception for invalid responses in production such as authorized=true but not having an authorization code. 
+
+            return result switch
             {
-                return result.AuthorizationCode;
-            }
+                { Authorized: false } => null,
+                { Authorized: true } when !string.IsNullOrWhiteSpace(result.AuthorizationCode) => result.AuthorizationCode,
+                _ => throw new BankException(StatusCodes.Status500InternalServerError,
+                    "Invalid response from acquiring bank.")
+            };
         }
 
-        throw response.StatusCode switch
+        ErrorBody? error = null;
+        if( response.StatusCode == HttpStatusCode.BadRequest)
         {
-            HttpStatusCode.BadRequest =>
-                new BankException(StatusCodes.Status400BadRequest, "Invalid payment request."),
-
-            HttpStatusCode.ServiceUnavailable =>
-                new BankException(StatusCodes.Status503ServiceUnavailable, "Acquiring bank is unavailable."),
-
-            _ =>
-                new BankException(StatusCodes.Status500InternalServerError, $"Unexpected response: {response.StatusCode}")
-        };
+            error = await response.Content.ReadFromJsonAsync<ErrorBody>(cancellationToken);
+        }
+        
+        throw new BankException((int)response.StatusCode, error?.GetMessage() ?? string.Empty);
+        
+        // In production, transport-level failures (e.g. timeouts and connection errors) could be translated into
+        // bank-specific exceptions by an HttpClient delegating handler (in Program.cs): 
+        // services
+        //      .AddHttpClient<IAcquiringBankClient, AcquiringBankClient>()
+        //      .AddHttpMessageHandler<BankErrorHandler>();
     }
 
     private sealed record BankPaymentResponse(
         [property: JsonPropertyName("authorized")] bool? Authorized,
-        [property: JsonPropertyName("authorized_code")] string? AuthorizationCode
+        [property: JsonPropertyName("authorization_code")] string? AuthorizationCode
     );
+
+    private sealed record ErrorBody(
+        [property: JsonPropertyName("error_message")] string? Messages,
+        [property: JsonPropertyName("errorMessage")] string? OtherMessages
+    )
+    {
+        public string GetMessage() => Messages ?? OtherMessages ?? string.Empty;
+    }
 
     private sealed record BankPaymentRequest(
         [property: JsonPropertyName("card_number")] string CardNumber,
