@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 using PaymentGateway.Api.Models;
@@ -17,7 +19,7 @@ public class PaymentsControllerExceptionFilter(ILogger<PaymentsControllerExcepti
                 string.IsNullOrWhiteSpace(bankException.Message)
                     ? "No error message provided."
                     : bankException.Message, // In production, sanitize the message to redact any sensitive information before logging.
-                context.HttpContext.TraceIdentifier);
+                Activity.Current?.TraceId.ToString());
 
             context.Result = new ObjectResult(new ProblemDetails
             {

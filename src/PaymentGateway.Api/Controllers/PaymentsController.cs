@@ -6,6 +6,7 @@ using PaymentGateway.Api.Enums;
 using PaymentGateway.Api.Models;
 using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
+using PaymentGateway.Api.Observability;
 using PaymentGateway.Api.Services;
 
 namespace PaymentGateway.Api.Controllers;
@@ -25,7 +26,7 @@ public class PaymentsController(
         [FromBody] CreatePaymentRequest request,
         CancellationToken cancellationToken)
     {
-        request.RecordInActivityTags(); // this can become a generic middleware as a cross-cutting concern
+        request.RecordTracing(); // this can become a generic middleware as a cross-cutting concern
 
         if (PaymentValidator.Validate(request, timeProvider.GetUtcNow().DateTime) is { } errors)
         {
@@ -40,7 +41,8 @@ public class PaymentsController(
         var payment = request.ToPaymentModel(bankAccountAuth);
         paymentsRepository.Add(payment);
 
-        Activity.Current?.SetTag("payment.id", payment.Id);
+        payment.RecordTracing();
+        payment.RecordMetrics();
 
         var response = payment.ToResponse();
         return CreatedAtRoute(nameof(GetPaymentAsync), new { id = response.Id }, response);
