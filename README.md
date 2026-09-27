@@ -2,6 +2,8 @@
 
 This is the .NET version of the Payment Gateway challenge. If you haven't already read this [README.md](https://github.com/cko-recruitment/) on the details of this exercise, please do so now. 
 
+The solution requires the .NET 10 SDK and targets C# 14.
+
 ## Template structure
 ```
 src/
