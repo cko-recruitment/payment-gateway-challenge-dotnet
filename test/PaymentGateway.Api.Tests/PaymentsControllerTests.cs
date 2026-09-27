@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 using PaymentGateway.Api.Controllers;
+using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Api.Services;
 
@@ -17,14 +18,16 @@ public class PaymentsControllerTests
     public async Task RetrievesAPaymentSuccessfully()
     {
         // Arrange
-        var payment = new PostPaymentResponse
+        var payment = new Payment
         {
             Id = Guid.NewGuid(),
             ExpiryYear = _random.Next(2023, 2030),
             ExpiryMonth = _random.Next(1, 12),
             Amount = _random.Next(1, 10000),
-            CardNumberLastFour = _random.Next(1111, 9999),
-            Currency = "GBP"
+            CardNumber = "123412341234" + _random.Next(1111, 9999),
+            Currency = "GBP",
+            Cvv = _random.Next(100, 999).ToString(),
+            BankAuthorization = null
         };
 
         var paymentsRepository = new PaymentsRepository();
@@ -38,7 +41,7 @@ public class PaymentsControllerTests
 
         // Act
         var response = await client.GetAsync($"/api/Payments/{payment.Id}");
-        var paymentResponse = await response.Content.ReadFromJsonAsync<PostPaymentResponse>();
+        var paymentResponse = await response.Content.ReadFromJsonAsync<PaymentResponse>();
         
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

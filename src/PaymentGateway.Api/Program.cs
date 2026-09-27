@@ -10,6 +10,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<PaymentsRepository>();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddHttpClient<IAcquiringBankClient, AcquiringBankClient>(client =>
+{
+    string baseUrl = builder.Configuration["AcquiringBank:BaseUrl"] ?? "http://localhost:8080/";
+    client.BaseAddress = new Uri(baseUrl);
+    client.Timeout = TimeSpan.FromSeconds(builder.Configuration.GetValue("AcquiringBank:TimeoutSeconds", 5));
+});
 
 var app = builder.Build();
 
