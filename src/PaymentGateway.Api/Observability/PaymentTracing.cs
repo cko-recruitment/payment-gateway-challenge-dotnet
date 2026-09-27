@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Net.NetworkInformation;
 
 using PaymentGateway.Api.Models;
 using PaymentGateway.Api.Models.Requests;

@@ -1,11 +1,7 @@
-using System.Text.Json.Serialization;
-
-using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-using PaymentGateway.Api;
 using PaymentGateway.Api.Middleware;
 using PaymentGateway.Api.Observability;
 using PaymentGateway.Api.Services;

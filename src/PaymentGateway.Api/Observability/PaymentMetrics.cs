@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-using PaymentGateway.Api.Enums;
 using PaymentGateway.Api.Models;
 
 namespace PaymentGateway.Api.Observability;

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using PaymentGateway.Api.Enums;
 using PaymentGateway.Api.Models;
