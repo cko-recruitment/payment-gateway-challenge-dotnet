@@ -1,5 +1,9 @@
 using System.Text.Json.Serialization;
 
+using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
 using PaymentGateway.Api.Middleware;
 using PaymentGateway.Api.Services;
 
@@ -15,6 +19,17 @@ builder.Services.AddControllers()
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService("PaymentGateway.Api"))
+    .WithTracing(tracing => tracing
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddConsoleExporter());
+// Metrics support can be enabled as below.
+//  .WithMetrics(metrics => metrics
+//      .AddAspNetCoreInstrumentation()
+//      .AddMeter("PaymentGateway.Api")
+//      .AddConsoleExporter());
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
