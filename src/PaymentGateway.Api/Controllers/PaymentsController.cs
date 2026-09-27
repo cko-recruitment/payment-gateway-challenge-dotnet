@@ -33,13 +33,13 @@ public class PaymentsController(
             });
         }
         
-        var bankAuthResult = await acquiringBankClient.AuthorizeAsync(request.ToPayment(), cancellationToken);
+        var bankAuthResult = await acquiringBankClient.AuthorizeAsync(request.ToBankPaymentRequest(), cancellationToken);
 
         var bankAuthStatus = bankAuthResult is null ? PaymentStatus.Declined : PaymentStatus.Authorized;
         
         var bankAccountAuth = new BankAuthorization(bankAuthStatus, bankAuthResult);
 
-        var payment = request.ToPayment(bankAccountAuth);
+        var payment = request.ToPaymentModel(bankAccountAuth);
         
         paymentsRepository.Add(payment);
 

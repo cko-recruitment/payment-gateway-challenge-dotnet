@@ -17,7 +17,5 @@ public record PaymentModel
 
     public required int Amount { get; init; }
 
-    public required string Cvv { get; init; }
-
-    public BankAuthorization BankAuthorization { get; init; } = new(PaymentStatus.Pending);
+    public required BankAuthorization BankAuthorization { get; init; }
 }

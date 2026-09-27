@@ -14,7 +14,7 @@ public class PaymentResponse
     public int Amount { get; init; }
 }
 
-public static class PaymentExtensions
+public static class PaymentResponseExtensions
 {
     extension(PaymentModel paymentModel)
     {

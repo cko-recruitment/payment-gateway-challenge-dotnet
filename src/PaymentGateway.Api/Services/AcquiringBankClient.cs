@@ -10,7 +10,7 @@ namespace PaymentGateway.Api.Services;
 public interface IAcquiringBankClient
 {
     // In production code, I would use a more robust and intuitive approach such as a discriminated union, or a Result<T> type, but for the sake of this exercise, I will use a nullable string to indicate authorized or not.
-    Task<string?> AuthorizeAsync(PaymentModel request, CancellationToken cancellationToken);
+    Task<string?> AuthorizeAsync(BankPaymentRequest request, CancellationToken cancellationToken);
 }
 
 public class AcquiringBankClient: IAcquiringBankClient
@@ -22,16 +22,8 @@ public class AcquiringBankClient: IAcquiringBankClient
         _httpClient = httpClient;
     }
 
-    public async Task<string?> AuthorizeAsync(PaymentModel paymentModel, CancellationToken cancellationToken)
+    public async Task<string?> AuthorizeAsync(BankPaymentRequest bankRequest, CancellationToken cancellationToken)
     {
-        BankPaymentRequest bankRequest = new(
-            CardNumber: paymentModel.CardNumber,
-            ExpiryDate: $"{paymentModel.ExpiryMonth:00}/{paymentModel.ExpiryYear:0000}",
-            Currency: paymentModel.Currency,
-            Amount: paymentModel.Amount,
-            Cvv: paymentModel.Cvv);
-        
-        
         using var response = await _httpClient.PostAsJsonAsync(
             "payments",
             bankRequest,
@@ -78,11 +70,4 @@ public class AcquiringBankClient: IAcquiringBankClient
         public string GetMessage() => Messages ?? OtherMessages ?? string.Empty;
     }
 
-    private sealed record BankPaymentRequest(
-        [property: JsonPropertyName("card_number")] string CardNumber,
-        [property: JsonPropertyName("expiry_date")] string ExpiryDate,
-        [property: JsonPropertyName("currency")] string Currency,
-        [property: JsonPropertyName("amount")] int Amount,
-        [property: JsonPropertyName("cvv")] string Cvv);
-    
 }

@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using PaymentGateway.Api.Controllers;
+using PaymentGateway.Api.Enums;
 using PaymentGateway.Api.Models;
 using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
@@ -129,7 +130,7 @@ public class PaymentsControllerTests
             Amount = _random.Next(1, 10000),
             CardNumber = "123412341234" + _random.Next(1111, 9999),
             Currency = "GBP",
-            Cvv = _random.Next(100, 999).ToString()
+            BankAuthorization = new BankAuthorization(PaymentStatus.Authorized)
         };
 
         var paymentsRepository = new PaymentsRepository();
