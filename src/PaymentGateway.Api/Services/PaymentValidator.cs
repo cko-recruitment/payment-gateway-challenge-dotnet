@@ -1,4 +1,4 @@
-﻿using PaymentGateway.Api.Models.Requests;
+using PaymentGateway.Api.Models.Requests;
 
 namespace PaymentGateway.Api.Services;
 
@@ -13,6 +13,8 @@ public static class PaymentValidator
     public static ValidationError? Validate(CreatePaymentRequest request, DateTime today) =>
         request switch
         {
+            { CardNumber: null } => new(nameof(request.CardNumber), ["Card number is required."]),
+
             { CardNumber.Length: < 14 or > 19 } => new(nameof(request.CardNumber),
                 ["Card number must contain 14 to 19 digits."]),
 
@@ -21,7 +23,7 @@ public static class PaymentValidator
 
             { ExpiryMonth: null } => new(nameof(request.ExpiryMonth), ["Expiry month is required."]),
 
-            { ExpiryMonth: < 0 or > 12 } => new(nameof(request.ExpiryMonth),
+            { ExpiryMonth: < 1 or > 12 } => new(nameof(request.ExpiryMonth),
                 ["Expiry month must be between 1 and 12."]),
 
             { ExpiryYear: null } => new(nameof(request.ExpiryYear), ["Expiry year is required."]),
@@ -34,7 +36,9 @@ public static class PaymentValidator
             { Currency: var currency } when !SupportedCurrencies.Contains(currency.ToUpper()) => new(
                 nameof(request.Currency), ["Currency is not supported."]),
 
-            { Amount: < 0 } => new(nameof(request.Amount),
+            { Amount: null } => new(nameof(request.Amount), ["Amount is required."]),
+
+            { Amount: <= 0 } => new(nameof(request.Amount),
                 ["Amount is required and must be a positive integer in minor units."]),
 
             { Cvv: null } => new(nameof(request.Cvv), ["CVV is required."]),
